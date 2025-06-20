@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIコーディング脅威のインフォグラフィック (Gemini API統合版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flowchart-arrow {
+            position: relative;
+            padding-right: 20px;
+        }
+        .flowchart-arrow::after {
+            content: '→';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0477BF;
+            font-weight: bold;
+        }
+        .flowchart-down-arrow {
+            position: relative;
+            padding-bottom: 20px;
+        }
+        .flowchart-down-arrow::after {
+            content: '↓';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #0477BF;
+            font-weight: bold;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #035AA6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Modal styles */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-active {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+    </style>
+</head>
+<body class="text-[#021839]">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#035AA6] mb-4">AIコーディングの脅威と対策</h1>
+            <p class="text-lg text-[#0477BF]">2025年の最新動向に基づくセキュアなAI活用ガイド</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <section class="lg:col-span-3 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-4">AIコーディングツールの進化と現状</h2>
+                <p class="mb-6 text-gray-600">AIコーディングツールは単なるコード補完を超え、開発プロセスに深く統合されるエージェントへと進化しています。Claude Code、GitHub Copilot、Gemini Code Assistは市場をリードする存在ですが、それぞれに特有のセキュリティ機能と潜在的なリスクが存在します。</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-[#035AA6] text-white">
+                                <th class="p-3">機能/脆弱性</th>
+                                <th class="p-3">Claude Code</th>
+                                <th class="p-3">GitHub Copilot</th>
+                                <th class="p-3">Gemini Code Assist</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-[#0477BF]/30">
+                                <td class="p-3 font-semibold">主要機能</td>
+                                <td class="p-3">エージェント型、脅威モデル探索、CI/CD統合</td>
+                                <td class="p-3">IDE内リアルタイム提案、CodeQL連携</td>
+                                <td class="p-3">Snyk連携によるSAST/SCA、プライベートリポジトリでのカスタマイズ</td>
+                            </tr>
+                            <tr class="bg-blue-50 border-b border-[#0477BF]/30">
+                                <td class="p-3 font-semibold">特有の脆弱性</td>
+                                <td class="p-3">強力なエージェント機能の悪用リスク</td>
+                                <td class="p-3">「ルールファイルバックドア」攻撃の報告事例あり</td>
+                                <td class="p-3">プライベートデータの品質管理が課題</td>
+                            </tr>
+                            <tr class="border-b border-[#0477BF]/30">
+                                <td class="p-3 font-semibold">セキュリティ体制</td>
+                                <td class="p-3">Bedrock/Vertex AI経由でのエンタープライズ展開</td>
+                                <td class="p-3">Dependabot, シークレットスキャン等と統合</td>
+                                <td class="p-3">エンタープライズ級のデータガバナンスと補償</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section class="md:col-span-2 lg:col-span-3 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-4">新たな攻撃ベクトル：AIを狙う4つの脅威</h2>
+                <p class="mb-6 text-gray-600">AIの特性を悪用する新たな攻撃手法が出現しています。これらの脅威は連動して、より深刻な被害を引き起こす可能性があります。下のボタンから、Geminiが生成する具体的な攻撃シナリオを確認できます。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <!-- Threat items will be here -->
+                </div>
+            </section>
+            
+            <section class="lg:col-span-3 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-2">✨ セキュアプロンプト・ジェネレーター (by Gemini)</h2>
+                <p class="mb-4 text-gray-600">脆弱性を生み出しやすい曖昧な指示を、Geminiが安全で具体的なプロンプトに変換します。試したいプロンプトを入力してください。</p>
+                <div class="space-y-4">
+                    <textarea id="prompt-input" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" rows="3" placeholder="例：ユーザーIDからユーザー情報を取得するPHPコードを書いて"></textarea>
+                    <button id="generate-secure-prompt" class="px-6 py-2 bg-[#035AA6] text-white font-bold rounded-lg hover:bg-[#062F73] transition-colors">✨ 安全なプロンプトを生成</button>
+                    <div id="prompt-output" class="hidden mt-4 p-4 bg-gray-50 rounded-md whitespace-pre-wrap"></div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-4">プロンプトの質と安全性</h2>
+                <p class="mb-6 text-gray-600">AIが生成するコードの安全性は、開発者が与える指示（プロンプト）の質に大きく依存します。「ナイーブなプロンプト」では脆弱なコードが生成されがちですが、「セキュアプロンプト」によって安全性は劇的に向上します。</p>
+                <div class="chart-container h-80 md:h-96">
+                    <canvas id="promptEffectivenessChart"></canvas>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-4">AI生成コードの脆弱性分布</h2>
+                <p class="mb-6 text-gray-600">Backslash Security社の2025年の分析によると、ナイーブなプロンプトで生成されたコードには様々な脆弱性が含まれていました。特にXSSやSSRFが顕著です。</p>
+                <div class="chart-container h-80 md:h-96">
+                    <canvas id="vulnerabilityDonutChart"></canvas>
+                </div>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-4">防御のピラミッド</h2>
+                 <p class="mb-6 text-gray-600">AIの脅威から身を守るには、多層的な防御アプローチが不可欠です。基盤となる人間によるレビューから、技術的なガードレールまで、各層が重要な役割を果たします。</p>
+                <div class="flex flex-col items-center space-y-1">
+                    <div class="w-2/6 bg-[#035AA6] text-white text-center py-2 rounded-t-lg">AIガードレール</div>
+                    <div class="w-3/6 bg-[#0477BF] text-white text-center py-2">セキュリティテスト統合</div>
+                    <div class="w-4/6 bg-[#00A1E4] text-white text-center py-2">セキュアプロンプト</div>
+                    <div class="w-5/6 bg-[#7DD3FC] text-[#021839] text-center py-2 rounded-b-lg">人間によるレビュー</div>
+                </div>
+            </section>
+
+            <section class="lg:col-span-3 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#062F73] mb-4">防御の強化：緩和戦略トップ5</h2>
+                <p class="mb-6 text-gray-600">AIコーディングの脅威に対抗するため、開発者と組織が実践すべき具体的な対策を以下に示します。</p>
+                <ol class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#035AA6] text-white font-bold mr-4 flex-shrink-0">1</span>
+                        <div>
+                            <h3 class="font-bold text-[#062F73]">人間によるレビューの徹底</h3>
+                            <p class="text-gray-600">AIが生成したコードは一切信頼せず、全て人間がレビューします。「自動化バイアス」を排し、セキュリティクリティカルな部分は特に注意深く検証することが不可欠です。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#035AA6] text-white font-bold mr-4 flex-shrink-0">2</span>
+                        <div>
+                            <h3 class="font-bold text-[#062F73]">セキュアプロンプトエンジニアリングの実践</h3>
+                            <p class="text-gray-600">「OWASPのベストプラクティスに従って」のように、セキュリティ要件を明確に指示します。AIにセキュリティ専門家の役割を割り当てる「ペルソナベース」も有効です。</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#035AA6] text-white font-bold mr-4 flex-shrink-0">3</span>
+                        <div>
+                            <h3 class="font-bold text-[#062F73]">セキュリティテスト (SAST/DAST/SCA) の統合</h3>
+                            <p class="text-gray-600">AI生成コードも既存のコードと同様に、SAST、DAST、SCAツールでスキャンします。特にAIが提案しがちな古いライブラリのチェックはSCAが担います。</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#035AA6] text-white font-bold mr-4 flex-shrink-0">4</span>
+                        <div>
+                            <h3 class="font-bold text-[#062F73]">AIガードレールの実装</h3>
+                            <p class="text-gray-600">AIエージェントの権限を最小限に抑え、有害コンテンツのフィルタリングや機密データへのアクセスを制御するポリシーを適用します。NIST AI RMFなどのフレームワークが指針となります。</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-[#035AA6] text-white font-bold mr-4 flex-shrink-0">5</span>
+                        <div>
+                            <h3 class="font-bold text-[#062F73]">学習データパイプラインの保護</h3>
+                            <p class="text-gray-600">モデルのファインチューニング等を行う場合、学習データの汚染を防ぐため、信頼できるデータソースの利用、データ検証、アクセス制御を徹底します。</p>
+                        </div>
+                    </li>
+                </ol>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 text-sm text-gray-500">
+            <p>このインフォグラフィックは、2025年6月10日時点の調査研究に基づき作成されました。</p>
+            <p>インタラクティブ機能 by Gemini API | データ可視化 by Canvas Infographics</p>
+        </footer>
+    </div>
+    
+    <!-- Modal -->
+    <div id="scenario-modal" class="modal pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center opacity-0 z-50">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-content bg-white w-11/12 md:max-w-2xl mx-auto rounded-lg shadow-lg z-50 transform -translate-y-1/2">
+            <div class="p-6 relative">
+                <button id="modal-close-button" class="absolute top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-800">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <h3 id="modal-title" class="text-2xl font-bold text-[#062F73]"></h3>
+                <div id="modal-body" class="mt-4 text-gray-700 whitespace-pre-wrap"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const brilliantBlues = {
+                primary: '#00A1E4',
+                secondary: '#0477BF',
+                tertiary: '#035AA6',
+                dark: '#062F73',
+                darkest: '#021839',
+                accent: '#FF6F61'
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            };
+            
+            // --- Charts Initialization ---
+            const promptEffectivenessCtx = document.getElementById('promptEffectivenessChart').getContext('2d');
+            new Chart(promptEffectivenessCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Claude 3.7-Sonnet', 'GPT-4o', 'Gemini-1.5-pro'],
+                    datasets: [{
+                        label: 'ナイーブプロンプト',
+                        data: [60, 20, 50],
+                        backgroundColor: brilliantBlues.secondary
+                    }, {
+                        label: 'セキュアプロンプト',
+                        data: [100, 65, 90],
+                        backgroundColor: brilliantBlues.primary
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + '%' } } },
+                    plugins: {
+                        title: { display: true, text: 'プロンプトの種類によるセキュアなコード生成率の比較', color: brilliantBlues.dark, font: { size: 16 } },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+
+            const vulnerabilityDonutCtx = document.getElementById('vulnerabilityDonutChart').getContext('2d');
+            new Chart(vulnerabilityDonutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['クロスサイトスクリプティング (XSS)', 'サーバーサイドリクエストフォージェリ (SSRF)', 'コマンドインジェクション', 'CSRF', 'その他'],
+                    datasets: [{
+                        label: '脆弱性分布',
+                        data: [45, 25, 15, 10, 5],
+                        backgroundColor: [brilliantBlues.primary, brilliantBlues.secondary, brilliantBlues.tertiary, brilliantBlues.dark, '#d1d5db'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'AI生成コードにおける脆弱性の種類', color: brilliantBlues.dark, font: { size: 16 } },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } },
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+            
+            // --- Gemini API Integration ---
+            const promptInput = document.getElementById('prompt-input');
+            const generateBtn = document.getElementById('generate-secure-prompt');
+            const promptOutput = document.getElementById('prompt-output');
+
+            generateBtn.addEventListener('click', async () => {
+                const userInput = promptInput.value.trim();
+                if (!userInput) {
+                    alert('プロンプトを入力してください。');
+                    return;
+                }
+
+                promptOutput.innerHTML = '<div class="loader"></div>';
+                promptOutput.classList.remove('hidden');
+
+                const geminiPrompt = `以下の開発者向けプロンプトを、ディレクトリトラバーサルやSQLインジェクションなどのセキュリティ脆弱性が発生しないように、より安全で具体的な指示に書き換えてください。なぜそのように変更したのか、セキュリティ上の重要なポイントも箇条書きで解説してください。\n\n## 元のプロンプト：\n「${userInput}」\n\n## 出力形式:\n### ✨ 改善されたプロンプト\nここに改善されたプロンプトを記述\n\n### 🔒 セキュリティ解説\n- ポイント1\n- ポイント2`;
+
+                try {
+                    const text = await callGemini(geminiPrompt);
+                    promptOutput.innerText = text;
+                } catch (error) {
+                    console.error('Error:', error);
+                    promptOutput.innerText = 'エラーが発生しました。しばらくしてから再度お試しください。';
+                }
+            });
+
+            // --- Threat Scenario Feature ---
+            const threats = [
+                { title: 'プロンプトインジェクション', description: '外部データに埋め込まれた悪意ある指示をAIに実行させ、不正なコード生成やデータ漏洩を引き起こす。' },
+                { title: '学習データ汚染', description: '学習データに脆弱なコードを注入し、AIが体系的に安全でないコードを生成するように仕向ける。' },
+                { title: 'ルールファイルバックドア', description: 'AIツールの設定ファイルに隠された指示を注入し、人間のレビューを回避して脆弱なコードを生成させる。' },
+                { title: 'システム侵害', description: '結果として、安全でない出力が他のシステムで実行され、XSS, SSRF, RCEなどの重大な脆弱性に繋がる。', isEndpoint: true }
+            ];
+
+            const threatContainer = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4');
+            threats.forEach((threat, index) => {
+                const isLast = index === threats.length - 1;
+                const card = document.createElement('div');
+                card.className = 'flex flex-col items-center';
+                
+                let cardContent;
+                if (threat.isEndpoint) {
+                    cardContent = `
+                        <div class="bg-red-100 p-4 rounded-lg border-2 border-red-500 w-full h-full flex flex-col justify-center">
+                            <h3 class="font-bold text-red-700">${threat.title}</h3>
+                            <p class="text-sm text-gray-600 mt-2">${threat.description}</p>
+                        </div>`;
+                } else {
+                    cardContent = `
+                        <div class="bg-blue-100 p-4 rounded-lg w-full h-full flex flex-col justify-center">
+                            <h3 class="font-bold text-[#035AA6]">${index + 1}. ${threat.title}</h3>
+                            <p class="text-sm text-gray-600 mt-2">${threat.description}</p>
+                            <button class="generate-scenario-btn mt-3 text-sm text-white bg-[#0477BF] hover:bg-[#035AA6] py-1 px-2 rounded" data-threat="${threat.title}">✨ シナリオ生成</button>
+                        </div>
+                        ${!isLast ? '<div class="text-2xl text-[#0477BF] my-2">→</div>' : ''}`;
+                }
+                card.innerHTML = cardContent;
+                threatContainer.appendChild(card);
+            });
+
+            document.querySelectorAll('.generate-scenario-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const threatTitle = e.target.dataset.threat;
+                    openModal(threatTitle);
+                });
+            });
+
+            // Modal logic
+            const modal = document.getElementById('scenario-modal');
+            const modalCloseBtn = document.getElementById('modal-close-button');
+            const modalOverlay = document.querySelector('.modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            async function openModal(threatTitle) {
+                modalTitle.innerText = `✨ 「${threatTitle}」の攻撃シナリオ`;
+                modalBody.innerHTML = '<div class="loader"></div>';
+                modal.classList.remove('pointer-events-none', 'opacity-0');
+                document.body.classList.add('modal-active');
+                
+                const geminiPrompt = `AIコーディングにおける「${threatTitle}」攻撃の具体的なシナリオを、架空のWebサービス（例：要約サービス、翻訳サービスなど）を舞台にして、開発者向けに分かりやすく物語形式で説明してください。攻撃者がどのように悪意のある指示を埋め込み、AIがどのように騙され、結果としてどのような被害が発生するかを含めてください。`;
+                
+                try {
+                    const text = await callGemini(geminiPrompt);
+                    modalBody.innerText = text;
+                } catch (error) {
+                    console.error('Error:', error);
+                    modalBody.innerText = 'エラーが発生しました。しばらくしてから再度お試しください。';
+                }
+            }
+
+            function closeModal() {
+                modal.classList.add('pointer-events-none', 'opacity-0');
+                document.body.classList.remove('modal-active');
+            }
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', closeModal);
+            
+            async function callGemini(prompt) {
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    console.error("Unexpected response structure:", result);
+                    throw new Error('予期しないレスポンス形式です。');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
